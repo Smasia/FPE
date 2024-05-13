@@ -34,25 +34,18 @@ con.commit()
 brukere = ["RES1", "RES2", "RES3"]
 restauranter = [{"navn": "PASTA SPESIALISTEN", "id": 1}, {"navn": "NORSK MAT", "id": 2}, {"navn":"AMERIKANEREN", "id": 3}]
 
+#kode jeg fant på intenett som gjør det mulig å inserte bilder til database
+def convertToBinaryData(filename):
+    with open(filename, 'rb') as file:
+        blobData = file.read()
+    return blobData
 
 #lager unike menyer for hver av restaurantene hvor rid er id-en til restauranten
-meny1 = [{"rid": 1, "rett": "Spaghetti med kjøttboller", "bilde": 0, "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
-         {"rid": 1, "rett": "Taglatelle", "bilde": 0, "beskrivelse": "taglatelle med pastasaus", "pris": 250},
-         {"rid": 1, "rett": "Tomatsuppe", "bilde": 0, "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 170},
-         {"rid": 1, "rett": "Tortelloni", "bilde": 0, "beskrivelse": "torteloni med pastasaus", "pris": 300},
-         {"rid": 1, "rett": "spaghetti med pølser", "bilde": 0, "beskrivelse": "spaghetti med pølser og tomatsaus", "pris": 200}]
-
-meny2 = [{"rid": 2, "rett": "Spaghetti med kjøttboller", "bilde": 0, "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
-         {"rid": 2, "rett": "Taglatelle", "bilde": 0, "beskrivelse": "taglatelle med pastasaus", "pris": 250},
-         {"rid": 2, "rett": "Tomatsuppe", "bilde": 0, "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 270},
-         {"rid": 2, "rett": "Tortelloni", "bilde": 0, "beskrivelse": "torteloni med pastasaus", "pris": 300},
-         {"rid": 2, "rett": "spaghetti med pølser", "bilde": 0, "beskrivelse": "spaghetti med pølser og tomatsaus", "pris": 200}]
-
-meny3 = [{"rid": 3, "rett": "Spaghetti med kjøttboller", "bilde": 0, "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
-         {"rid": 3, "rett": "Taglatelle", "bilde": 0, "beskrivelse": "taglatelle med pastasaus", "pris": 250},
-         {"rid": 3, "rett": "Tomatsuppe", "bilde": 0, "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 370},
-         {"rid": 3, "rett": "Tortelloni", "bilde": 0, "beskrivelse": "torteloni med pastasaus", "pris": 300},
-         {"rid": 3, "rett": "spaghetti med pølser", "bilde": 0, "beskrivelse": "spaghetti med pølser og tomatsaus", "pris": 200}]
+meny1 = [{"rid": 1, "rett": "Spaghetti med kjøttboller", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/spaghettiKjøttboller.jpg"), "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
+         {"rid": 1, "rett": "Tagliatelle", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/tagliatelle.jpg"), "beskrivelse": "tagliatelle med pastasaus", "pris": 250},
+         {"rid": 1, "rett": "Tomatsuppe", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/tomatsuppe.jpg"), "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 170},
+         {"rid": 1, "rett": "Tortellini", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/tortellini.jpg"), "beskrivelse": "tortellini med pastasaus", "pris": 300},
+         {"rid": 1, "rett": "spaghetti med pølser", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/spaghettiPølser.jpg"), "beskrivelse": "spaghetti med pølser og tomatsaus", "pris": 200}]
 
 
 # Legger til brukere og restauranter i brukere og restauranter tabellene, samt tømmer begge tabellene for å unngå kopier
@@ -63,6 +56,4 @@ con.commit()
 cur.executemany("INSERT INTO brukere(navn, passord) VALUES(?,'Passord1')", [(bruker,) for bruker in brukere])
 cur.executemany("INSERT INTO restauranter(id,navn) VALUES(?,?)", [(res["id"], res["navn"]) for res in restauranter])
 cur.executemany("INSERT INTO meny_retter(restaurant_id,rett,bilde,beskrivelse,pris) VALUES(?,?,?,?,?)", [(rett["rid"],rett["rett"],rett["bilde"],rett["beskrivelse"],rett["pris"]) for rett in meny1])
-cur.executemany("INSERT INTO meny_retter(restaurant_id,rett,bilde,beskrivelse,pris) VALUES(?,?,?,?,?)", [(rett["rid"],rett["rett"],rett["bilde"],rett["beskrivelse"],rett["pris"]) for rett in meny2])
-cur.executemany("INSERT INTO meny_retter(restaurant_id,rett,bilde,beskrivelse,pris) VALUES(?,?,?,?,?)", [(rett["rid"],rett["rett"],rett["bilde"],rett["beskrivelse"],rett["pris"]) for rett in meny3])
 con.commit()
