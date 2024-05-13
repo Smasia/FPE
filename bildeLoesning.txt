@@ -1,0 +1,7 @@
+from flask import send_from_directory
+
+@app.route('/get_images/<image_name>')
+def get_image(image_name):
+    return send_from_directory('c:/code/flask/static/images', image_name)
+
+<img src="http://127.0.0.1:5010/get_images/{{bilde.bilde}}" alt="feil">
