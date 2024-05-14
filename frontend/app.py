@@ -13,6 +13,14 @@ def index():
   restauranter = requests.get('http://127.0.0.1:5010/get_restauranter').json()
   return render_template('index.html', restauranter=restauranter)
 
+# Rute for siden for valgt restaurant
+@app.route('/get_restaurant/<rid>', methods = ["GET"]) # rid er Restaurant id
+def get_restaurant(rid):
+  restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+  restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
+  return [restaurant_meny, restaurant]
+
+
 
 # Starter applikasjonen på port 5000
 if __name__ == "__main__":

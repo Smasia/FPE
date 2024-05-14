@@ -26,6 +26,15 @@ def get_restaurants():
       result.append({"navn": restaurant[1], "id": restaurant[0]})
    return result
 
+# Rute for å hente valgt restaurant fra serveren
+@app.route('/get_restaurant', methods = ["GET"])
+def get_restaurant():
+   rid = request.get_json()["rid"]
+   cur.execute("SELECT * FROM restauranter WHERE id = ?", (rid,))
+   content = cur.fetchone()
+   result = [content[0], content[1]]
+   return result
+
 # Rute for å hente menyer og retter fra serveren
 @app.route('/get_restaurant_meny', methods = ["GET"])
 def restaurant_meny():
