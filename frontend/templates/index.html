@@ -3,10 +3,9 @@
 {% block content %}
 
   <ul>
-    {% for item in data %}
+    {% for restaurant in restauranter %}
     <li>
-      <p>{{item.rett}}</p>
-      <img src="http://127.0.0.1:5010/get_images/{{item.bilde}}" alt="bilde av {{item.rett}}">
+      <h2>{{restaurant.navn}}</h2>
     </li>
     {% endfor %}
   </ul>

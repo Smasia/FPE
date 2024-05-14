@@ -16,7 +16,8 @@ def get_image(image_name):
     return send_from_directory('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images', image_name)
 #/var/www/flask-application/static/images/
 
-@app.route('/get_restaurants', methods = ["GET"])
+# Rute for å hente restauranter fra serveren
+@app.route('/get_restauranter', methods = ["GET"])
 def get_restaurants():
    cur.execute("SELECT * FROM restauranter")
    content = cur.fetchall()
@@ -25,7 +26,8 @@ def get_restaurants():
       result.append({"navn": restaurant[1], "id": restaurant[0]})
    return result
 
-@app.route('/restaurant_meny', methods = ["GET"])
+# Rute for å hente menyer og retter fra serveren
+@app.route('/get_restaurant_meny', methods = ["GET"])
 def restaurant_meny():
   rid = request.get_json()["rid"]
   cur.execute("SELECT * FROM meny_retter WHERE restaurant_id = ?", (rid,))

@@ -10,8 +10,8 @@ CORS(app)
 # Rute for hjemmeside
 @app.route('/', methods = ["GET"])
 def index():
-  print(requests.get('http://127.0.0.1:5010/restaurant_meny', json={"rid": 1}).json())
-  return render_template('index.html', data=requests.get('http://127.0.0.1:5010/restaurant_meny', json={"rid": 1}).json())
+  restauranter = requests.get('http://127.0.0.1:5010/get_restauranter').json()
+  return render_template('index.html', restauranter=restauranter)
 
 
 # Starter applikasjonen på port 5000
