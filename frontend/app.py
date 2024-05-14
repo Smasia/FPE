@@ -18,7 +18,7 @@ def index():
 def get_restaurant(rid):
   restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
   restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
-  return [restaurant_meny, restaurant]
+  return render_template('restaurant.html', restaurant=restaurant, meny=restaurant_meny)
 
 
 

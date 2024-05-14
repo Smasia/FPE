@@ -11,7 +11,7 @@ con = sqlite3.connect('./database.db', check_same_thread=False)
 cur = con.cursor()
 
 # Rute for å hente bilder fra serveren
-@app.route('/get_images/<image_name>', methods = ["GET"])
+@app.route('/get_image/<image_name>', methods = ["GET"])
 def get_image(image_name):
     return send_from_directory('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images', image_name)
 #/var/www/flask-application/static/images/
