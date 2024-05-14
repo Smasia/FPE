@@ -46,6 +46,7 @@ def restaurant_meny():
     result.append({"id": data[0], "rid": data[1], "rett": data[2], "bilde": data[3], "beskrivelse": data[4], "pris": data[5]})
   return result
 
+# rute som leter etter bruker i database og sender melder om den finnes eller ikke
 @app.route('/logg_inn', methods = ["GET"])
 def logg_inn():
    navn = request.get_json()["navn"]
@@ -55,7 +56,7 @@ def logg_inn():
    print(bruker)
    if bruker:
     return {"status": "finnes"}
-   return {"status": 1}
+   return {"status": "finnes_ikke"}
 # Starter applikasjonen på port 5010
 if __name__ == "__main__":
   app.run(debug=True, port=5010)
