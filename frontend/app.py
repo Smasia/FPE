@@ -27,7 +27,13 @@ def logg_inn():
     return render_template('logg_inn.html')
 
   if request.method == "POST":
-    return
+    navn = request.form.get('navn')
+    passord = request.form.get('passord')
+    bruker = requests.get('http://127.0.0.1:5010/logg_inn', json={"navn": navn, "passord": passord}).json()
+    if bruker["status"] == "finnes":
+      return render_template('eier_sin_side.html')
+    print(bruker["status"])
+    return render_template('logg_inn.html', status=bruker["status"])
 
 # Starter applikasjonen på port 5000
 if __name__ == "__main__":

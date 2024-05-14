@@ -8,4 +8,10 @@
   <input type="submit" value="Logg inn">
 </form>
 
+{% if status %}
+
+<p style="color:red;">Passord og/eller navn er feil!</p>
+
+{% endif %}
+
 {% endblock %}

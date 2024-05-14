@@ -7,6 +7,7 @@ cur = con.cursor()
 # Lager tabell for brukere så eiere kan logge inn
 cur.execute("""CREATE TABLE IF NOT EXISTS brukere(
             id integer primary key NOT NULL,
+            restaurant_id integer NOT NULL,
             navn text NOT NULL,
             passord text NOT NULL
             )""")
@@ -31,7 +32,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS meny_retter(
 con.commit()
 
 # Lager brukere og restauranter med navn og id
-brukere = ["RES1", "RES2", "RES3"]
+brukere = [{"navn":"RES1", "rid": 1}, {"navn":"RES2", "rid": 2}, {"navn":"RES3", "rid": 3}]
 restauranter = [{"navn": "PASTA SPESIALISTEN", "id": 1}, {"navn": "NORSK MAT", "id": 2}, {"navn":"AMERIKANEREN", "id": 3}]
 
 #lager unike menyer for hver av restaurantene hvor rid er id-en til restauranten
@@ -47,7 +48,7 @@ cur.execute("DELETE FROM brukere")
 cur.execute("DELETE FROM restauranter")
 cur.execute("DELETE FROM meny_retter")
 con.commit()
-cur.executemany("INSERT INTO brukere(navn, passord) VALUES(?,'Passord1')", [(bruker,) for bruker in brukere])
+cur.executemany("INSERT INTO brukere(restaurant_id, navn, passord) VALUES(?, ?, 'Passord1')", [(bruker["rid"], bruker["navn"]) for bruker in brukere])
 cur.executemany("INSERT INTO restauranter(id,navn) VALUES(?,?)", [(res["id"], res["navn"]) for res in restauranter])
 cur.executemany("INSERT INTO meny_retter(restaurant_id,rett,bilde,beskrivelse,pris) VALUES(?,?,?,?,?)", [(rett["rid"],rett["rett"],rett["bilde"],rett["beskrivelse"],rett["pris"]) for rett in meny1])
 con.commit()
