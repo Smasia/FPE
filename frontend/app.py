@@ -44,6 +44,12 @@ def eier_sin_side(rid, navn):
   restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
   return render_template('eier_sin_side.html', navn=navn, meny=restaurant_meny, restaurant=restaurant)
 
+# Rute som skal slette en rett fra databasem
+@app.route('/fjern_rett/<rett_id>/<rid>/<navn>', methods=["POST"])
+def fjern_rett(rett_id, rid, navn):
+  requests.delete('http://127.0.0.1:5010/fjern_rett', json={"rett_id": rett_id, "rid": rid})
+  return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
+
 # Starter applikasjonen på port 5000
 if __name__ == "__main__":
   app.run(debug=True, port=5000)

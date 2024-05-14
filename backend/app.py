@@ -56,6 +56,16 @@ def logg_inn():
    if bruker:
     return {"status": "finnes", "navn": bruker[2], "rid": bruker[1]}
    return {"status": "finnes_ikke"}
+
+# Rute for å fjerne rett
+@app.route('/fjern_rett', methods=["DELETE"])
+def fjern_rett():
+  rett_id = request.get_json()["rett_id"]
+  rid = request.get_json()["rid"]
+  cur.execute("DELETE FROM meny_retter WHERE restaurant_id = ? AND id = ?", (rid, rett_id))
+  con.commit()
+  return 200
+
 # Starter applikasjonen på port 5010
 if __name__ == "__main__":
   app.run(debug=True, port=5010)

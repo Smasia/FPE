@@ -22,7 +22,7 @@ con.commit()
 
 # Lager tabell over ulike retter til alle restauranter med hvilke restaurant de hører til bestemt av restaurant_id
 cur.execute("""CREATE TABLE IF NOT EXISTS meny_retter(
-            matrett_id integer primary key NOT NULL,
+            id integer primary key NOT NULL,
             restaurant_id integer NOT NULL,
             rett text NOT NULL,
             bilde text NOT NULL,
