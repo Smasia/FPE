@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form action="{{ url_for('logg_inn') }}" method="post">
+  <input type="text" name="navn" id="navn" placeholder="Navn">
+  <input type="password" name="passord" id="passord" placeholder="Passord">
+  <input type="submit" value="Logg inn">
+</form>
+
+{% endblock %}

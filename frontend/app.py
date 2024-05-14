@@ -20,7 +20,14 @@ def get_restaurant(rid):
   restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
   return render_template('restaurant.html', restaurant=restaurant, meny=restaurant_meny)
 
+# Rute som håndterer eier som logger inn
+@app.route('/logg_inn', methods=["GET","POST"])
+def logg_inn():
+  if request.method == "GET":
+    return render_template('logg_inn.html')
 
+  if request.method == "POST":
+    return
 
 # Starter applikasjonen på port 5000
 if __name__ == "__main__":
