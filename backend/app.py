@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 import sqlite3
 
@@ -7,14 +7,24 @@ app = Flask(__name__)
 CORS(app)
 
 # Sette opp kobling og peker til database
-con = sqlite3.connect('database.db', check_same_thread=False)
+con = sqlite3.connect('./database.db', check_same_thread=False)
 cur = con.cursor()
 
-# Midlertidig rute for å teste koblingen mellom klient og server
-@app.route('/index', methods = ["GET"])
-def index():
-  return {"text": "Hello World!"}
+# Rute for å hente bilder fra serveren
+@app.route('/get_images/<image_name>', methods = ["GET"])
+def get_image(image_name):
+    return send_from_directory('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images', image_name)
+#/var/www/flask-application/static/images/
 
+@app.route('/restaurant_meny', methods = ["GET"])
+def restaurant_meny():
+  rid = request.get_json()["rid"]
+  cur.execute("SELECT * FROM meny_retter WHERE restaurant_id = ?", (rid,))
+  content = cur.fetchall()
+  result = []
+  for data in content:
+    result.append({"id": data[0], "rid": data[1], "rett": data[2], "bilde": data[3], "beskrivelse": data[4], "pris": data[5]})
+  return result
 
 # Starter applikasjonen på port 5010
 if __name__ == "__main__":

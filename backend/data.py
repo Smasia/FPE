@@ -24,7 +24,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS meny_retter(
             matrett_id integer primary key NOT NULL,
             restaurant_id integer NOT NULL,
             rett text NOT NULL,
-            bilde blob NOT NULL,
+            bilde text NOT NULL,
             beskrivelse text NOT NULL,
             pris integer NOT NULL
             )""")
@@ -34,18 +34,12 @@ con.commit()
 brukere = ["RES1", "RES2", "RES3"]
 restauranter = [{"navn": "PASTA SPESIALISTEN", "id": 1}, {"navn": "NORSK MAT", "id": 2}, {"navn":"AMERIKANEREN", "id": 3}]
 
-#kode jeg fant på intenett som gjør det mulig å inserte bilder til database
-def convertToBinaryData(filename):
-    with open(filename, 'rb') as file:
-        blobData = file.read()
-    return blobData
-
 #lager unike menyer for hver av restaurantene hvor rid er id-en til restauranten
-meny1 = [{"rid": 1, "rett": "Spaghetti med kjøttboller", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/spaghettiKjøttboller.jpg"), "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
-         {"rid": 1, "rett": "Tagliatelle", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/tagliatelle.jpg"), "beskrivelse": "tagliatelle med pastasaus", "pris": 250},
-         {"rid": 1, "rett": "Tomatsuppe", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/tomatsuppe.jpg"), "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 170},
-         {"rid": 1, "rett": "Tortellini", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/tortellini.jpg"), "beskrivelse": "tortellini med pastasaus", "pris": 300},
-         {"rid": 1, "rett": "spaghetti med pølser", "bilde": convertToBinaryData("E:/Utvikling/forberedelsePrøveEksamen/backend/images/spaghettiPølser.jpg"), "beskrivelse": "spaghetti med pølser og tomatsaus", "pris": 200}]
+meny1 = [{"rid": 1, "rett": "Spaghetti med kjøttboller", "bilde": "spaghettiKjøttboller.jpg", "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
+         {"rid": 1, "rett": "Tagliatelle", "bilde": "tagliatelle.jpg", "beskrivelse": "tagliatelle med pastasaus", "pris": 250},
+         {"rid": 1, "rett": "Tomatsuppe", "bilde": "tomatsuppe.jpg", "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 170},
+         {"rid": 1, "rett": "Tortellini", "bilde": "tortellini.jpg", "beskrivelse": "tortellini med pastasaus", "pris": 300},
+         {"rid": 1, "rett": "spaghetti med pølser", "bilde": "spaghettiPølser.jpg", "beskrivelse": "spaghetti med pølser og tomatsaus", "pris": 200}]
 
 
 # Legger til brukere og restauranter i brukere og restauranter tabellene, samt tømmer begge tabellene for å unngå kopier

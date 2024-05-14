@@ -2,6 +2,13 @@
 
 {% block content %}
 
-  {{text}}
+  <ul>
+    {% for item in data %}
+    <li>
+      <p>{{item.rett}}</p>
+      <img src="http://127.0.0.1:5010/get_images/{{item.bilde}}" alt="bilde av {{item.rett}}">
+    </li>
+    {% endfor %}
+  </ul>
 
 {% endblock %}
