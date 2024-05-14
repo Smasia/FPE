@@ -53,9 +53,8 @@ def logg_inn():
    passord = request.get_json()["passord"]
    cur.execute("SELECT * FROM brukere WHERE navn = ? AND passord = ?", (navn, passord))
    bruker = cur.fetchone()
-   print(bruker)
    if bruker:
-    return {"status": "finnes"}
+    return {"status": "finnes", "navn": bruker[2], "rid": bruker[1]}
    return {"status": "finnes_ikke"}
 # Starter applikasjonen på port 5010
 if __name__ == "__main__":

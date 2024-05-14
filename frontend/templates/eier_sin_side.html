@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Velkommen {{navn}}!</h2>
+<h3>Meny for: {{restaurant.1}}</h3>
+<div>
+  <form action="" method="post">
+    <input type="submit" value="Legg til ny rett">
+  </form>
+</div>
+
+<ul>
+{% for rett in meny %}
+  <li>
+    <div>
+      <h4>{{rett.rett}}</h4>
+      <img class="meny-bilde" src="http://127.0.0.1:5010/get_image/{{rett.bilde}}" alt="bilde av {{rett.rett}}">
+      <p>{{rett.beskrivelse}}</p>
+      <p>{{rett.pris}} kr</p>
+    </div>
+    <div>
+      <form action="" method="post">
+        <input type="submit" value="Endre rett">
+      </form>
+      <form action="" method="post">
+        <input type="submit" value="Fjern rett">
+      </form>
+    </div>
+  </li>
+{% endfor %}
+</ul>
+
+{% endblock %}
