@@ -1,6 +1,7 @@
 from flask import Flask, request, send_from_directory
 from flask_cors import CORS
 import sqlite3
+import requests
 
 # Sette opp applikasjonen
 app = Flask(__name__)
@@ -15,6 +16,14 @@ cur = con.cursor()
 def get_image(image_name):
     return send_from_directory('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images', image_name)
 #/var/www/flask-application/static/images/
+
+@app.route('/upload/<rid>/<navn>', methods=['POST'])
+def upload_image(rid, navn):
+    image_file = request.files['image']
+    print(image_file)
+    image_file.save('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images\\' + image_file.filename)
+    
+    return requests.get('http://127.0.0.1:5000/eier_sin_side', rid=rid, navn=navn)
 
 # Rute for å hente restauranter fra serveren
 @app.route('/get_restauranter', methods = ["GET"])
@@ -83,7 +92,6 @@ def rediger_rett():
   content = request.get_json()["content"]
   cur.execute("UPDATE meny_retter SET rett = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
   con.commit()
-  print(content["rett_tekst"])
   return "success", 200
 
 @app.route('/rediger_bilde', methods=["PUT"])
@@ -102,6 +110,7 @@ def rediger_beskrivelse():
   content = request.get_json()["content"]
   cur.execute("UPDATE meny_retter SET beskrivelse = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
   con.commit()
+  return "success", 200
 
 @app.route('/rediger_pris', methods=["PUT"])
 def rediger_pris():
@@ -110,8 +119,6 @@ def rediger_pris():
   content = request.get_json()["content"]
   cur.execute("UPDATE meny_retter SET pris = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
   con.commit()
-
-  
   return "success", 200
 
 # Starter applikasjonen på port 5010

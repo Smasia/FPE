@@ -66,8 +66,8 @@ def rediger_rett_tekst(rett_id, rid, navn):
 
 @app.route('/rediger/bilde/<rett_id>/<rid>/<navn>', methods=["POST"])
 def rediger_rett_bilde(rett_id, rid, navn):
-  rett_bilde = [request.files['the_image'], request.files['the_image'].filename]
-  requests.put('http://127.0.0.1:5010/rediger_bilde', json={"rett_id": rett_id, "rid": rid, "content": rett_bilde})
+  image_file = request.files['image']
+  print(image_file)
   return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
 
 @app.route('/rediger/beskrivelse/<rett_id>/<rid>/<navn>', methods=["POST"])
