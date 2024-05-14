@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<ul>
+  <li>
+    <h3>
+      {{rett.rett}}
+      <form action="{{ url_for('rediger_rett_tekst', rett_id=rett_id, rid=rid, navn=navn) }}" method="post">
+        <input type="text" name="tekst" value="{{rett.rett}}">
+        <input type="submit" value="Endre rett">
+      </form>
+    </h3>
+    <img class="meny-bilde" src="http://127.0.0.1:5010/get_image/{{rett.bilde}}" alt="bilde av {{rett.rett}}">
+    <form action="{{ url_for('rediger_rett_bilde', rett_id=rett_id, rid=rid, navn=navn) }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="the_image">
+      <input type="submit" value="Endre bilde">
+    </form>
+    <p>
+      {{rett.beskrivelse}}
+      <form action="{{ url_for('rediger_rett_beskrivelse', rett_id=rett_id, rid=rid, navn=navn) }}" method="post">
+        <input type="text" name="beskrivelse" value="{{rett.beskrivelse}}">
+        <input type="submit" value="Endre beskrivelse">
+      </form>
+    </p>
+    <p>
+      {{rett.pris}} kr
+      <form action="{{ url_for('rediger_rett_pris', rett_id=rett_id, rid=rid, navn=navn) }}" method="post">
+        <input type="text" name="pris" value="{{rett.pris}}">
+        <input type="submit" value="Endre pris">
+      </form>
+    </p>
+  </li>
+</ul>
+
+{% endblock %}

@@ -10,9 +10,11 @@
   
   <nav>
     <h1>Restauranter i gjøvik</h1>
+    {% if not rid %}
     <form action="{{ url_for('logg_inn') }}" method="get">
       <input type="submit" value="Logg inn som eier">
     </form>
+    {% endif %}
   </nav>
   {% block content %}
   

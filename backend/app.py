@@ -37,13 +37,23 @@ def get_restaurant():
 
 # Rute for å hente menyer og retter fra serveren
 @app.route('/get_restaurant_meny', methods = ["GET"])
-def restaurant_meny():
+def get_restaurant_meny():
   rid = request.get_json()["rid"]
   cur.execute("SELECT * FROM meny_retter WHERE restaurant_id = ?", (rid,))
   content = cur.fetchall()
   result = []
   for data in content:
     result.append({"id": data[0], "rid": data[1], "rett": data[2], "bilde": data[3], "beskrivelse": data[4], "pris": data[5]})
+  return result
+
+# Rute for å hente en rett
+@app.route('/get_rett', methods = ["GET"])
+def get_rett():
+  rid = request.get_json()["rid"]
+  rett_id = request.get_json()["rett_id"]
+  cur.execute("SELECT * FROM meny_retter WHERE restaurant_id = ? AND id = ?", (rid,rett_id))
+  content = cur.fetchone()
+  result = {"id": content[0], "rid": content[1], "rett": content[2], "bilde": content[3], "beskrivelse": content[4], "pris": content[5]}
   return result
 
 # rute som leter etter bruker i database og sender melder om den finnes eller ikke
@@ -64,7 +74,45 @@ def fjern_rett():
   rid = request.get_json()["rid"]
   cur.execute("DELETE FROM meny_retter WHERE restaurant_id = ? AND id = ?", (rid, rett_id))
   con.commit()
-  return 200
+  return "succes", 200
+
+@app.route('/rediger_tekst', methods=["PUT"])
+def rediger_rett():
+  rett_id = request.get_json()["rett_id"]
+  rid = request.get_json()["rid"]
+  content = request.get_json()["content"]
+  cur.execute("UPDATE meny_retter SET rett = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
+  con.commit()
+  print(content["rett_tekst"])
+  return "success", 200
+
+@app.route('/rediger_bilde', methods=["PUT"])
+def rediger_bilde():
+  rett_id = request.get_json()["rett_id"]
+  rid = request.get_json()["rid"]
+  content = request.get_json()["content"]
+  cur.execute("UPDATE meny_retter SET bilde = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
+  con.commit()
+  return "success", 200
+
+@app.route('/rediger_beskrivelse', methods=["PUT"])
+def rediger_beskrivelse():
+  rett_id = request.get_json()["rett_id"]
+  rid = request.get_json()["rid"]
+  content = request.get_json()["content"]
+  cur.execute("UPDATE meny_retter SET beskrivelse = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
+  con.commit()
+
+@app.route('/rediger_pris', methods=["PUT"])
+def rediger_pris():
+  rett_id = request.get_json()["rett_id"]
+  rid = request.get_json()["rid"]
+  content = request.get_json()["content"]
+  cur.execute("UPDATE meny_retter SET pris = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
+  con.commit()
+
+  
+  return "success", 200
 
 # Starter applikasjonen på port 5010
 if __name__ == "__main__":
