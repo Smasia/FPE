@@ -1,7 +1,7 @@
+import os
 from flask import Flask, request, send_from_directory, redirect
 from flask_cors import CORS
 import sqlite3
-import requests
 
 # Sette opp applikasjonen
 app = Flask(__name__)
@@ -18,11 +18,19 @@ def get_image(image_name):
 #/var/www/flask-application/static/images/
 # E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images\\
 
+# Rute for å lagre bilde i serveren og oppdatere databasen så den peker til det nye bilde. Fjerner også det gamle bilde
 @app.route('/post_image/<rett_id>/<rid>/<navn>', methods=['POST'])
 def upload_image(rett_id, rid, navn):
-    image_file = request.files['image']
-    print(image_file)
-    image_file.save('C:\\Code\\FPE\\backend\\static\\images' + image_file.filename)
+    new_image_file = request.files['image']
+    cur.execute("SELECT bilde from meny_retter WHERE restaurant_id = ? AND id = ?", (rid, rett_id))
+    old_image_file = cur.fetchone()[0]
+    
+
+    os.remove('C:\\Code\\FPE\\backend\\static\\images\\' + old_image_file)
+    new_image_file.save('C:\\Code\\FPE\\backend\\static\\images\\' + new_image_file.filename)
+
+    cur.execute("UPDATE meny_retter SET bilde = ? WHERE restaurant_id = ? AND id = ?", (new_image_file.filename, rid, rett_id))
+    con.commit()
     
     return redirect('http://127.0.0.1:5020/eier_sin_side/' + rid + "/" + navn)
 
