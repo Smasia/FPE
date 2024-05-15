@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, redirect
 from flask_cors import CORS
 import sqlite3
 import requests
@@ -14,16 +14,17 @@ cur = con.cursor()
 # Rute for å hente bilder fra serveren
 @app.route('/get_image/<image_name>', methods = ["GET"])
 def get_image(image_name):
-    return send_from_directory('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images', image_name)
+    return send_from_directory('C:\\Code\\FPE\\backend\\static\\images', image_name)
 #/var/www/flask-application/static/images/
+# E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images\\
 
-@app.route('/upload/<rid>/<navn>', methods=['POST'])
-def upload_image(rid, navn):
+@app.route('/post_image/<rett_id>/<rid>/<navn>', methods=['POST'])
+def upload_image(rett_id, rid, navn):
     image_file = request.files['image']
     print(image_file)
-    image_file.save('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images\\' + image_file.filename)
+    image_file.save('C:\\Code\\FPE\\backend\\static\\images' + image_file.filename)
     
-    return requests.get('http://127.0.0.1:5000/eier_sin_side', rid=rid, navn=navn)
+    return redirect('http://127.0.0.1:5020/eier_sin_side/' + rid + "/" + navn)
 
 # Rute for å hente restauranter fra serveren
 @app.route('/get_restauranter', methods = ["GET"])

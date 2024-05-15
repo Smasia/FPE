@@ -64,12 +64,6 @@ def rediger_rett_tekst(rett_id, rid, navn):
   requests.put('http://127.0.0.1:5010/rediger_tekst', json={"rett_id": rett_id, "rid": rid, "content": rett_tekst})
   return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
 
-@app.route('/rediger/bilde/<rett_id>/<rid>/<navn>', methods=["POST"])
-def rediger_rett_bilde(rett_id, rid, navn):
-  image_file = request.files['image']
-  print(image_file)
-  return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
-
 @app.route('/rediger/beskrivelse/<rett_id>/<rid>/<navn>', methods=["POST"])
 def rediger_rett_beskrivelse(rett_id, rid, navn):
   rett_beskrivelse = request.form.get('beskrivelse')
@@ -84,4 +78,4 @@ def rediger_rett_pris(rett_id, rid, navn):
 
 # Starter applikasjonen på port 5000
 if __name__ == "__main__":
-  app.run(debug=True, port=5000)
+  app.run(debug=True, port=5020)
