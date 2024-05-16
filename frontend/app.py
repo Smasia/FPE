@@ -9,6 +9,7 @@ CORS(app)
 
 app.secret_key = secrets.token_hex()
 
+
 # Rute for hjemmeside
 @app.route('/', methods = ["GET"])
 def index():
@@ -55,7 +56,7 @@ def logg_inn():
     # Sjekker om bruker er kunde
     if bruker["status"] == "finnes" and bruker["rid"] == None:
       session["user"] = navn
-      return redirect('index')
+      return redirect(url_for('index'))
     return render_template('logg_inn.html', status=bruker["status"])
 
 
@@ -152,6 +153,33 @@ def rediger_rett_pris(rett_id, rid, navn):
     return redirect(url_for('eier_sin_side', rid=session["rid"], navn=session["user"]))
   else:
     return redirect('/logg_inn')
+
+
+# Rute for å legge til matrett og se matretter i handlekurv
+@app.route('/ordre/<rett_id>/<rid>', methods=["POST", "GET"])
+def ordre(rett_id, rid):
+  if 'ordre' not in session:
+        session['ordre'] = []
+
+  if request.method == "POST":
+    found = False
+    print(session["ordre"])
+    for order in session["ordre"]:
+        if order["rett_id"] == rett_id:
+            order["antall"] += 1
+            found = True
+            break
+        
+    if not found:
+        order = {"rett_id": rett_id, "antall": 1}
+        session["ordre"].append(order)
+    print(session["ordre"])
+    session.modified = True
+    return redirect(url_for('get_restaurant', rid=rid))
+
+  if request.method == "GET":
+
+    return render_template('ordre.html')
 
 
 

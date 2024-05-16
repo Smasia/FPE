@@ -114,7 +114,7 @@ def logg_inn():
 
 
 
-# RUte for å legge til bruker
+# Rute for å legge til bruker
 @app.route('/registrer', methods=["POST"])
 def registrer():
   navn = request.get_json()["navn"]

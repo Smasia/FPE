@@ -10,6 +10,11 @@
     <img class="meny-bilde" src="http://127.0.0.1:5010/get_image/{{rett.bilde}}" alt="bilde av {{rett.rett}}">
     <p>{{rett.beskrivelse}}</p>
     <p>{{rett.pris}} kr</p>
+    {% if navn %}
+    <form action="{{ url_for('ordre', rett_id=rett.id, rid=restaurant.0) }}" method="post">
+      <input type="submit" value="Legg til i handlekurv">
+    </form>
+    {% endif %}
   </li>
 {% endfor %}
 </ul>
