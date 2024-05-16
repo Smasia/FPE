@@ -109,7 +109,7 @@ def logg_inn():
    cur.execute("SELECT * FROM brukere WHERE navn = ? AND passord = ?", (navn, passord))
    bruker = cur.fetchone()
    if bruker:
-    return {"status": "finnes", "navn": bruker[2], "rid": bruker[1]}
+    return {"status": "finnes", "navn": bruker[2], "rid": bruker[1], "id": bruker[0]}
    return {"status": "finnes_ikke"}
 
 
@@ -173,6 +173,31 @@ def rediger_pris():
   cur.execute("UPDATE meny_retter SET pris = ? WHERE restaurant_id = ? AND id = ?", (content,rid, rett_id))
   con.commit()
   return "success", 200
+
+
+
+@app.route('/bestill', methods=["POST"])
+def bestill():
+  bruker_id = request.get_json()["bruker_id"]
+  ordre = request.get_json()["ordre"]
+  pris = request.get_json()["pris"]
+
+  for order in ordre:
+    cur.execute("INSERT INTO bestillinger(bruker_id, rett_id, antall, pris, total) VALUES(?,?,?,?,?)", (bruker_id, order["rett_id"], order["antall"], order["pris"], pris))
+    con.commit()
+  return "success", 200
+
+
+
+@app.route('/get_bestillinger', methods=["GET"])
+def get_bestillinger():
+  bruker_id =request.get_json()["bruker_id"]
+  cur.execute("SELECT * FROM bestillinger WHERE bruker_id = ?", (bruker_id,))
+  bestillinger = cur.fetchall()
+  content = []
+  for bestilling in bestillinger:
+    content.append({"rett_id": bestilling[2], "pris": bestilling[3], "total": bestilling[4], "antall": bestilling[5]})
+  return content
 
 
 

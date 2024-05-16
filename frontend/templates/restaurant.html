@@ -3,6 +3,11 @@
 {% block content %}
 
 <h2>Restaurant: {{restaurant.1}}</h2>
+{% if navn %}
+<form action="{{ url_for('ordre', rett_id=0, rid=restaurant.0) }}" method="get">
+  <input type="submit" value="Handlekurv">
+</form>
+{% endif %}
 <ul>
 {% for rett in meny %}
   <li>

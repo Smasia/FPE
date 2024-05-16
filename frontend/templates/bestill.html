@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Ordre for: {{navn}}</h2>
+
+<ul>
+{% for order in ordre %}
+  {% for rett in meny %}
+    {% if (order.rett_id|string == rett.id|string) %}
+      <li>
+        <h3>{{rett.rett}}</h3>
+        <img class="meny-bilde" src="http://127.0.0.1:5010/get_image/{{rett.bilde}}" alt="bilde av {{rett.rett}}">
+        <p>{{rett.beskrivelse}}</p>
+
+        <p>Antall: {{order.antall}}</p>
+        <p>Total pris: {{rett.pris * order.antall}} kr</p>
+      </li>
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+</ul>
+
+<p>Handelen ble gjort {{tid}}</p>
+<p>Total pris: {{pris}}</p>
+<p>Levering tar omtrent 3 dager</p>
+<p>Forventet levering: {{levering}}</p>
+
+<form action="{{ url_for('bestill', rid=meny.0.rid) }}" method="post">
+  <input type="submit" value="Bekreft og betal">
+</form>
+
+{% endblock %}

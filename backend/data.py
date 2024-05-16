@@ -31,12 +31,23 @@ cur.execute("""CREATE TABLE IF NOT EXISTS meny_retter(
             )""")
 con.commit()
 
+cur.execute("""CREATE TABLE IF NOT EXISTS bestillinger(
+            id integer primary key NOT NULL,
+            bruker_id integer NOT NULL,
+            rett_id integer NOT NULL,
+            pris integer NOT NULL,
+            total integer,
+            antall NOT NULL
+)""")
+con.commit()
+
+
 # Lager brukere og restauranter med navn og id
 brukere = [{"navn":"RES1@mail.com", "rid": 1}, {"navn":"RES2@mail.com", "rid": 2}, {"navn":"RES3@mail.com", "rid": 3}]
 restauranter = [{"navn": "PASTA SPESIALISTEN", "id": 1}, {"navn": "NORSK MAT", "id": 2}, {"navn":"AMERIKANEREN", "id": 3}]
 
 #lager unike menyer for hver av restaurantene hvor rid er id-en til restauranten
-meny1 = [{"rid": 1, "rett": "Spaghetti med kjøttboller", "bilde": "spaghettiKjøttboller.jpg", "beskrivelse": "spaghetti med kjøttballer og tomatsaus", "pris": 200},
+meny1 = [{"rid": 1, "rett": "Spaghetti med kjøttboller", "bilde": "spaghettiKjøttboller.jpg", "beskrivelse": "spaghetti med kjøttboller og tomatsaus", "pris": 200},
          {"rid": 1, "rett": "Tagliatelle", "bilde": "tagliatelle.jpg", "beskrivelse": "tagliatelle med pastasaus", "pris": 250},
          {"rid": 1, "rett": "Tomatsuppe", "bilde": "tomatsuppe.jpg", "beskrivelse": "Tomatsuppe med makaroni og egg, ved siden av hvitløksbrød", "pris": 170},
          {"rid": 1, "rett": "Tortellini", "bilde": "tortellini.jpg", "beskrivelse": "tortellini med pastasaus", "pris": 300},

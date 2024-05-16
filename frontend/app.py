@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_cors import CORS
 import requests
 import secrets
+from datetime import datetime, timedelta
 
 # Setter opp applikasjon
 app = Flask(__name__)
@@ -56,6 +57,7 @@ def logg_inn():
     # Sjekker om bruker er kunde
     if bruker["status"] == "finnes" and bruker["rid"] == None:
       session["user"] = navn
+      session["id"] = bruker["id"]
       return redirect(url_for('index'))
     return render_template('logg_inn.html', status=bruker["status"])
 
@@ -158,28 +160,64 @@ def rediger_rett_pris(rett_id, rid, navn):
 # Rute for å legge til matrett og se matretter i handlekurv
 @app.route('/ordre/<rett_id>/<rid>', methods=["POST", "GET"])
 def ordre(rett_id, rid):
-  if 'ordre' not in session:
-        session['ordre'] = []
+  if "user" in session:
+    if 'ordre' not in session:
+          session['ordre'] = []
 
+    if request.method == "POST":
+      found = False
+      for order in session["ordre"]:
+          if order["rett_id"] == rett_id:
+              order["antall"] += 1
+              found = True
+              break
+      if not found:
+          order = {"rett_id": rett_id, "antall": 1}
+          session["ordre"].append(order)
+      session.modified = True
+      return redirect(url_for('get_restaurant', rid=rid))
+
+    if request.method == "GET":
+      restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+      return render_template('ordre.html', ordre=session["ordre"], meny=restaurant_meny, navn=session["user"])
+  else:
+    return redirect('/logg_inn')
+
+
+
+@app.route('/bestill/<rid>', methods=["GET","POST"])
+def bestill(rid):
   if request.method == "POST":
-    found = False
-    print(session["ordre"])
+    restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+    total_pris = 50
+
     for order in session["ordre"]:
-        if order["rett_id"] == rett_id:
-            order["antall"] += 1
-            found = True
-            break
-        
-    if not found:
-        order = {"rett_id": rett_id, "antall": 1}
-        session["ordre"].append(order)
-    print(session["ordre"])
-    session.modified = True
-    return redirect(url_for('get_restaurant', rid=rid))
-
+      for rett in restaurant_meny:
+        if int(order["rett_id"]) == int(rett["id"]):
+          order["pris"] = int(order["antall"]) * int(rett["pris"])
+          total_pris += int(order["antall"]) * int(rett["pris"])
+          session.modified = True
+          break
+    requests.post('http://127.0.0.1:5010/bestill', json={"bruker_id": session["id"], "ordre": session["ordre"], "pris": total_pris})
+    session["ordre"] = []
+    return redirect('/')
+  
   if request.method == "GET":
+    restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+    total_pris = 50
+    print(session["ordre"])
+    tid = datetime.now()
+    forventet_levering = tid + timedelta(days=3)
+    levering = forventet_levering.strftime('%Y-%m-%d %H:%M:%S')
 
-    return render_template('ordre.html')
+    for order in session["ordre"]:
+      for rett in restaurant_meny:
+        if int(order["rett_id"]) == int(rett["id"]):
+          order["pris"] = int(order["antall"]) * int(rett["pris"])
+          total_pris += int(order["antall"]) * int(rett["pris"])
+          session.modified = True
+          break
+    return render_template('bestill.html', pris=total_pris, tid=tid, levering=levering, meny=restaurant_meny, navn=session["user"])
 
 
 
