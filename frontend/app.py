@@ -73,7 +73,9 @@ def registrer():
     navn = request.form.get('navn')
     passord = request.form.get('passord')
     requests.post('http://127.0.0.1:5010/registrer', json={"navn": navn, "passord": passord})
+    bruker = requests.get('http://127.0.0.1:5010/logg_inn', json={"navn": navn, "passord": passord}).json() # Brukes for å hente id
     session["user"] = navn
+    session["id"] = bruker["id"]
     return redirect(url_for('index'))
 
 
@@ -224,6 +226,7 @@ def bestill(rid):
 # Rute for å logge ut
 @app.route('/logg_ut')
 def logg_ut():
+    session["ordre"] = []
     session.pop('user', None)
     return redirect(url_for('index'))
 

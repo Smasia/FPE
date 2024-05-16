@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, send_from_directory, redirect
 from flask_cors import CORS
 import sqlite3
+from datetime import datetime
 
 # Sette opp applikasjonen
 app = Flask(__name__)
@@ -181,9 +182,12 @@ def bestill():
   bruker_id = request.get_json()["bruker_id"]
   ordre = request.get_json()["ordre"]
   pris = request.get_json()["pris"]
+  tid = datetime.now()
 
   for order in ordre:
-    cur.execute("INSERT INTO bestillinger(bruker_id, rett_id, antall, pris, total) VALUES(?,?,?,?,?)", (bruker_id, order["rett_id"], order["antall"], order["pris"], pris))
+    cur.execute("SELECT rett from meny_retter WHERE id = ?", (order["rett_id"]))
+    rett = cur.fetchone()[0]
+    cur.execute("INSERT INTO bestillinger(bruker_id, rett_id, rett, antall, pris, total, dato) VALUES(?,?,?,?,?,?,?)", (bruker_id, order["rett_id"], rett, order["antall"], order["pris"], pris, tid))
     con.commit()
   return "success", 200
 
@@ -196,7 +200,7 @@ def get_bestillinger():
   bestillinger = cur.fetchall()
   content = []
   for bestilling in bestillinger:
-    content.append({"rett_id": bestilling[2], "pris": bestilling[3], "total": bestilling[4], "antall": bestilling[5]})
+    content.append({"rett": bestilling[3],"rett_id": bestilling[2], "pris": bestilling[4], "total": bestilling[5], "antall": bestilling[6], "tid": bestilling[7]})
   return content
 
 

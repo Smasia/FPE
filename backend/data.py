@@ -35,9 +35,11 @@ cur.execute("""CREATE TABLE IF NOT EXISTS bestillinger(
             id integer primary key NOT NULL,
             bruker_id integer NOT NULL,
             rett_id integer NOT NULL,
+            rett text NOT NULL,
             pris integer NOT NULL,
-            total integer,
-            antall NOT NULL
+            total integer NOT NULL,
+            antall NOT NULL,
+            dato TIMESTAMP
 )""")
 con.commit()
 

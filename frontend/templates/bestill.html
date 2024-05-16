@@ -6,6 +6,7 @@
 
 <ul>
 {% for order in ordre %}
+1
   {% for rett in meny %}
     {% if (order.rett_id|string == rett.id|string) %}
       <li>
@@ -21,8 +22,9 @@
 {% endfor %}
 </ul>
 
+<p>Frakt: 50 kr </p>
+<p>Total pris: {{pris}} kr</p>
 <p>Handelen ble gjort {{tid}}</p>
-<p>Total pris: {{pris}}</p>
 <p>Levering tar omtrent 3 dager</p>
 <p>Forventet levering: {{levering}}</p>
 
