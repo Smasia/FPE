@@ -13,6 +13,8 @@ def index():
   restauranter = requests.get('http://127.0.0.1:5010/get_restauranter').json()
   return render_template('index.html', restauranter=restauranter)
 
+
+
 # Rute for siden for valgt restaurant
 @app.route('/get_restaurant/<rid>', methods = ["GET"]) # rid er Restaurant id
 def get_restaurant(rid):
@@ -37,6 +39,8 @@ def logg_inn():
     print(bruker["status"])
     return render_template('logg_inn.html', status=bruker["status"])
 
+
+
 # rute som sender bruker til eier_sin_side.html
 @app.route('/eier_sin_side/<rid>/<navn>', methods = ["GET"])
 def eier_sin_side(rid, navn):
@@ -44,11 +48,15 @@ def eier_sin_side(rid, navn):
   restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
   return render_template('eier_sin_side.html', navn=navn, meny=restaurant_meny, restaurant=restaurant, rid=restaurant[0])
 
+
+
 # Rute som sender request til serveren for å fjerne valgt rett
 @app.route('/fjern_rett/<rett_id>/<rid>/<navn>', methods=["POST"])
 def fjern_rett(rett_id, rid, navn):
   requests.delete('http://127.0.0.1:5010/fjern_rett', json={"rett_id": rett_id, "rid": rid})
   return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
+
+
 
 # Rute som sender bruker til rediger side
 @app.route('/rediger_rett/<rett_id>/<rid>/<navn>', methods=["get"])
@@ -58,24 +66,33 @@ def rediger_rett(rett_id, rid, navn):
 
 
 
+# Rute for å endre navn på retten
 @app.route('/rediger/rett/<rett_id>/<rid>/<navn>', methods=["POST"])
 def rediger_rett_tekst(rett_id, rid, navn):
   rett_tekst = request.form.get('tekst')
   requests.put('http://127.0.0.1:5010/rediger_tekst', json={"rett_id": rett_id, "rid": rid, "content": rett_tekst})
   return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
 
+
+
+# Rute for å endre beskrivelse på retten
 @app.route('/rediger/beskrivelse/<rett_id>/<rid>/<navn>', methods=["POST"])
 def rediger_rett_beskrivelse(rett_id, rid, navn):
   rett_beskrivelse = request.form.get('beskrivelse')
   requests.put('http://127.0.0.1:5010/rediger_beskrivelse', json={"rett_id": rett_id, "rid": rid, "content": rett_beskrivelse})
   return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
 
+
+
+# Rute for å endre pris på retten
 @app.route('/rediger/pris/<rett_id>/<rid>/<navn>', methods=["POST"])
 def rediger_rett_pris(rett_id, rid, navn):
   rett_pris = request.form.get('pris')
   requests.put('http://127.0.0.1:5010/rediger_pris', json={"rett_id": rett_id, "rid": rid, "content": rett_pris})
   return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
 
+
+
 # Starter applikasjonen på port 5000
 if __name__ == "__main__":
-  app.run(debug=True, port=5020)
+  app.run(debug=True, port=5000)
