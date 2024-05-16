@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Bestillinger for: {{navn}}</h2>
+
+<ul>
+{% for bestilling in bestillinger %}
+  <li>
+    <p>Rett: {{bestilling.rett}}</p>
+    <p>Antall: {{bestilling.antall}}</p>
+    <p>Pris: {{bestilling.pris}}</p>
+    <p>Tid bestilling ble mottat: {{bestilling.tid}}</p>
+    <p>Total pris for hele bestilling: {{bestilling.total}}</p>
+    <br>
+  </li>
+{% endfor %}
+
+{% endblock %}

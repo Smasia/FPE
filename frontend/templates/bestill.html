@@ -6,22 +6,17 @@
 
 <ul>
 {% for order in ordre %}
-1
   {% for rett in meny %}
     {% if (order.rett_id|string == rett.id|string) %}
       <li>
-        <h3>{{rett.rett}}</h3>
-        <img class="meny-bilde" src="http://127.0.0.1:5010/get_image/{{rett.bilde}}" alt="bilde av {{rett.rett}}">
-        <p>{{rett.beskrivelse}}</p>
-
-        <p>Antall: {{order.antall}}</p>
-        <p>Total pris: {{rett.pris * order.antall}} kr</p>
+        <p>{{rett.rett}}: {{order.antall}}</p>
+        <p>pris: {{rett.pris * order.antall}} kr</p>
       </li>
     {% endif %}
   {% endfor %}
 {% endfor %}
 </ul>
-
+<br>
 <p>Frakt: 50 kr </p>
 <p>Total pris: {{pris}} kr</p>
 <p>Handelen ble gjort {{tid}}</p>

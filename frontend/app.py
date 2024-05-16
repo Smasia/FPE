@@ -189,37 +189,49 @@ def ordre(rett_id, rid):
 
 @app.route('/bestill/<rid>', methods=["GET","POST"])
 def bestill(rid):
-  if request.method == "POST":
-    restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
-    total_pris = 50
+  if "user" in session:
+    if request.method == "POST":
+      restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+      total_pris = 50
 
-    for order in session["ordre"]:
-      for rett in restaurant_meny:
-        if int(order["rett_id"]) == int(rett["id"]):
-          order["pris"] = int(order["antall"]) * int(rett["pris"])
-          total_pris += int(order["antall"]) * int(rett["pris"])
-          session.modified = True
-          break
-    requests.post('http://127.0.0.1:5010/bestill', json={"bruker_id": session["id"], "ordre": session["ordre"], "pris": total_pris})
-    session["ordre"] = []
-    return redirect('/')
-  
-  if request.method == "GET":
-    restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
-    total_pris = 50
-    print(session["ordre"])
-    tid = datetime.now()
-    forventet_levering = tid + timedelta(days=3)
-    levering = forventet_levering.strftime('%Y-%m-%d %H:%M:%S')
+      for order in session["ordre"]:
+        for rett in restaurant_meny:
+          if int(order["rett_id"]) == int(rett["id"]):
+            order["pris"] = int(order["antall"]) * int(rett["pris"])
+            total_pris += int(order["antall"]) * int(rett["pris"])
+            session.modified = True
+            break
+      requests.post('http://127.0.0.1:5010/bestill', json={"bruker_id": session["id"], "ordre": session["ordre"], "pris": total_pris})
+      session["ordre"] = []
+      return redirect('/')
+    
+    if request.method == "GET":
+      restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+      total_pris = 50
+      tid = datetime.now()
+      forventet_levering = tid + timedelta(days=3)
+      levering = forventet_levering.strftime('%Y-%m-%d %H:%M:%S')
 
-    for order in session["ordre"]:
-      for rett in restaurant_meny:
-        if int(order["rett_id"]) == int(rett["id"]):
-          order["pris"] = int(order["antall"]) * int(rett["pris"])
-          total_pris += int(order["antall"]) * int(rett["pris"])
-          session.modified = True
-          break
-    return render_template('bestill.html', pris=total_pris, tid=tid, levering=levering, meny=restaurant_meny, navn=session["user"])
+      for order in session["ordre"]:
+        for rett in restaurant_meny:
+          if int(order["rett_id"]) == int(rett["id"]):
+            order["pris"] = int(order["antall"]) * int(rett["pris"])
+            total_pris += int(order["antall"]) * int(rett["pris"])
+            session.modified = True
+            break
+      return render_template('bestill.html', pris=total_pris, tid=tid, levering=levering, meny=restaurant_meny, navn=session["user"], ordre=session["ordre"])
+  else:
+    return redirect('/logg_inn')
+
+
+@app.route('/bestillinger', methods=["GET"])
+def bestillinger():
+  if "user" in session:
+    bestillinger = requests.get('http://127.0.0.1:5010/get_bestillinger', json={"bruker_id": session["id"]}).json()
+    print(bestillinger)
+    return  render_template('bestillinger.html', bestillinger=bestillinger, navn=session["user"])
+  else:
+    return redirect('/logg_inn')
 
 
 
