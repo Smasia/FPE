@@ -32,7 +32,7 @@ cur.execute("""CREATE TABLE IF NOT EXISTS meny_retter(
 con.commit()
 
 # Lager brukere og restauranter med navn og id
-brukere = [{"navn":"RES1", "rid": 1}, {"navn":"RES2", "rid": 2}, {"navn":"RES3", "rid": 3}]
+brukere = [{"navn":"RES1@mail.com", "rid": 1}, {"navn":"RES2@mail.com", "rid": 2}, {"navn":"RES3@mail.com", "rid": 3}]
 restauranter = [{"navn": "PASTA SPESIALISTEN", "id": 1}, {"navn": "NORSK MAT", "id": 2}, {"navn":"AMERIKANEREN", "id": 3}]
 
 #lager unike menyer for hver av restaurantene hvor rid er id-en til restauranten

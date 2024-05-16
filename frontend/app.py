@@ -12,17 +12,26 @@ app.secret_key = secrets.token_hex()
 # Rute for hjemmeside
 @app.route('/', methods = ["GET"])
 def index():
-  restauranter = requests.get('http://127.0.0.1:5010/get_restauranter').json()
-  return render_template('index.html', restauranter=restauranter)
+  if "user" in session:
+    restauranter = requests.get('http://127.0.0.1:5010/get_restauranter').json()
+    return render_template('index.html', restauranter=restauranter, navn = session["user"])
+  else:
+    restauranter = requests.get('http://127.0.0.1:5010/get_restauranter').json()
+    return render_template('index.html', restauranter=restauranter)
 
 
 
 # Rute som sender bruker til restaurant.html side
 @app.route('/get_restaurant/<rid>', methods = ["GET"])
 def get_restaurant(rid):
-  restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
-  restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
-  return render_template('restaurant.html', restaurant=restaurant, meny=restaurant_meny)
+  if "user" in session:
+    restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+    restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
+    return render_template('restaurant.html', restaurant=restaurant, meny=restaurant_meny, navn = session["user"])
+  else:
+    restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
+    restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
+    return render_template('restaurant.html', restaurant=restaurant, meny=restaurant_meny)
 
 
 
@@ -46,8 +55,23 @@ def logg_inn():
     # Sjekker om bruker er kunde
     if bruker["status"] == "finnes" and bruker["rid"] == None:
       session["user"] = navn
-      return redirect(url_for('kunde_sin_side.html', navn=session["user"]))
+      return redirect('index')
     return render_template('logg_inn.html', status=bruker["status"])
+
+
+
+# Rute for å registrere bruker
+@app.route('/registrer', methods=["GET", "POST"])
+def registrer():
+  if request.method == "GET":
+    return render_template('registrer.html')
+  
+  if request.method == "POST":
+    navn = request.form.get('navn')
+    passord = request.form.get('passord')
+    requests.post('http://127.0.0.1:5010/registrer', json={"navn": navn, "passord": passord})
+    session["user"] = navn
+    return redirect(url_for('index'))
 
 
 
@@ -57,7 +81,7 @@ def eier_sin_side(rid, navn):
   if "user" in session and "rid" in session:
     restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
     restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
-    return render_template('eier_sin_side.html', navn=navn, meny=restaurant_meny, restaurant=restaurant, rid=restaurant[0])
+    return render_template('eier_sin_side.html', navn=session["user"], meny=restaurant_meny, restaurant=restaurant, rid=restaurant[0])
   else:
     return redirect('/logg_inn')
 
@@ -67,7 +91,7 @@ def eier_sin_side(rid, navn):
 @app.route('/legg_til_ny_rett/<rid>/<navn>', methods=["GET"])
 def legg_til_ny_rett(rid, navn):
   if "user" in session and "rid" in session:
-    return render_template('legg_til.html', rid=rid, navn=navn)
+    return render_template('legg_til.html', rid=session["rid"], navn=session["user"])
   else:
     return redirect('/logg_inn')
 
@@ -78,7 +102,7 @@ def legg_til_ny_rett(rid, navn):
 def fjern_rett(rett_id, rid, navn):
   if "user" in session and "rid" in session:
     requests.delete('http://127.0.0.1:5010/fjern_rett', json={"rett_id": rett_id, "rid": rid})
-    return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
+    return redirect(url_for('eier_sin_side', rid=session["rid"], navn=session["user"]))
   else:
     return redirect('/logg_inn')
 
@@ -89,7 +113,7 @@ def fjern_rett(rett_id, rid, navn):
 def rediger_rett(rett_id, rid, navn):
   if "user" in session and "rid" in session:
     rett = requests.get('http://127.0.0.1:5010/get_rett', json={"rett_id": rett_id, "rid": rid}).json()
-    return render_template('rediger.html', rett=rett, rett_id=rett_id, rid=rid, navn=navn)
+    return render_template('rediger.html', rett=rett, rett_id=rett_id, rid=session["rid"], navn=session["user"])
   else:
     return redirect('/logg_inn')
 
@@ -101,7 +125,7 @@ def rediger_rett_tekst(rett_id, rid, navn):
   if "user" in session and "rid" in session:
     rett_tekst = request.form.get('tekst')
     requests.put('http://127.0.0.1:5010/rediger_tekst', json={"rett_id": rett_id, "rid": rid, "content": rett_tekst})
-    return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
+    return redirect(url_for('eier_sin_side', rid=session["rid"], navn=navn))
   else:
     return redirect('/logg_inn')
 
@@ -113,7 +137,7 @@ def rediger_rett_beskrivelse(rett_id, rid, navn):
   if "user" in session and "rid" in session:
     rett_beskrivelse = request.form.get('beskrivelse')
     requests.put('http://127.0.0.1:5010/rediger_beskrivelse', json={"rett_id": rett_id, "rid": rid, "content": rett_beskrivelse})
-    return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
+    return redirect(url_for('eier_sin_side', rid=session["rid"], navn=session["user"]))
   else:
     return redirect('/logg_inn')
 
@@ -125,7 +149,7 @@ def rediger_rett_pris(rett_id, rid, navn):
   if "user" in session and "rid" in session:
     rett_pris = request.form.get('pris')
     requests.put('http://127.0.0.1:5010/rediger_pris', json={"rett_id": rett_id, "rid": rid, "content": rett_pris})
-    return redirect(url_for('eier_sin_side', rid=rid, navn=navn))
+    return redirect(url_for('eier_sin_side', rid=session["rid"], navn=session["user"]))
   else:
     return redirect('/logg_inn')
 

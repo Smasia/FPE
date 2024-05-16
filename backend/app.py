@@ -114,6 +114,17 @@ def logg_inn():
 
 
 
+# RUte for å legge til bruker
+@app.route('/registrer', methods=["POST"])
+def registrer():
+  navn = request.get_json()["navn"]
+  passord = request.get_json()["passord"]
+  cur.execute("INSERT INTO brukere(navn, passord) VALUES(?,?)", (navn, passord))
+  con.commit()
+  return "succes", 200
+
+
+
 # Rute for å fjerne rett
 @app.route('/fjern_rett', methods=["DELETE"])
 def fjern_rett():
