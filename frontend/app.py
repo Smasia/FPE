@@ -15,8 +15,8 @@ def index():
 
 
 
-# Rute for siden for valgt restaurant
-@app.route('/get_restaurant/<rid>', methods = ["GET"]) # rid er Restaurant id
+# Rute som sender bruker til restaurant.html side
+@app.route('/get_restaurant/<rid>', methods = ["GET"])
 def get_restaurant(rid):
   restaurant_meny = requests.get('http://127.0.0.1:5010/get_restaurant_meny', json={"rid": rid}).json()
   restaurant = requests.get('http://127.0.0.1:5010/get_restaurant', json={"rid": rid}).json()
@@ -30,12 +30,15 @@ def logg_inn():
   if request.method == "GET":
     return render_template('logg_inn.html')
 
+
   if request.method == "POST":
     navn = request.form.get('navn')
     passord = request.form.get('passord')
     bruker = requests.get('http://127.0.0.1:5010/logg_inn', json={"navn": navn, "passord": passord}).json()
+
     if bruker["status"] == "finnes":
       return redirect(url_for('eier_sin_side', rid=bruker["rid"], navn=bruker["navn"]))
+    
     print(bruker["status"])
     return render_template('logg_inn.html', status=bruker["status"])
 
@@ -50,6 +53,12 @@ def eier_sin_side(rid, navn):
 
 
 
+# Rute som sender bruker til legg_til.html side
+@app.route('/legg_til_ny_rett/<rid>/<navn>', methods=["GET"])
+def legg_til_ny_rett(rid, navn):
+  return render_template('legg_til.html', rid=rid, navn=navn)
+
+
 # Rute som sender request til serveren for å fjerne valgt rett
 @app.route('/fjern_rett/<rett_id>/<rid>/<navn>', methods=["POST"])
 def fjern_rett(rett_id, rid, navn):
@@ -58,7 +67,7 @@ def fjern_rett(rett_id, rid, navn):
 
 
 
-# Rute som sender bruker til rediger side
+# Rute som sender bruker til rediger.html side
 @app.route('/rediger_rett/<rett_id>/<rid>/<navn>', methods=["get"])
 def rediger_rett(rett_id, rid, navn):
   rett = requests.get('http://127.0.0.1:5010/get_rett', json={"rett_id": rett_id, "rid": rid}).json()

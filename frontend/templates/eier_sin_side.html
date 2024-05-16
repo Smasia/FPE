@@ -3,9 +3,9 @@
 {% block content %}
 
 <h2>Velkommen {{navn}}!</h2>
-<h3>Meny for: {{restaurant.1}}</h3>
+<h3>Meny for din restaurant: {{restaurant.1}}</h3>
 <div>
-  <form action="" method="post">
+  <form action="{{ url_for('legg_til_ny_rett', rid=restaurant.0, navn=navn) }}" method="get">
     <input type="submit" value="Legg til ny rett">
   </form>
 </div>

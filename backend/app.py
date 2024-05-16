@@ -35,7 +35,21 @@ def upload_image(rett_id, rid, navn):
     cur.execute("UPDATE meny_retter SET bilde = ? WHERE restaurant_id = ? AND id = ?", (new_image_file.filename, rid, rett_id))
     con.commit()
     
-    return redirect('http://127.0.0.1:5000/eier_sin_side/' + rid + "/" + navn)
+    return redirect('http://127.0.0.1:5000/eier_sin_side/' + rid + '/' + navn)
+
+
+# Rute for å legge til en ny rett
+@app.route('/post_ny_rett/<rid>/<navn>', methods=["POST"])
+def post_ny_rett(rid, navn):
+  rett = request.form.get('tekst')
+  image_file = request.files['image']
+  beskrivelse = request.form.get('beskrivelse')
+  pris = request.form.get('pris')
+
+  image_file.save('E:\\Utvikling\\forberedelsePrøveEksamen\\backend\\static\\images\\' + image_file.filename)
+  cur.execute("INSERT INTO meny_retter(restaurant_id, rett, bilde, beskrivelse, pris) VALUES(?,?,?,?,?)", (rid, rett, image_file.filename, beskrivelse, pris))
+  con.commit()
+  return redirect('http://127.0.0.1:5000/eier_sin_side/' + rid + '/' + navn)
 
 
 
