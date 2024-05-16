@@ -7,7 +7,7 @@ cur = con.cursor()
 # Lager tabell for brukere så eiere kan logge inn
 cur.execute("""CREATE TABLE IF NOT EXISTS brukere(
             id integer primary key NOT NULL,
-            restaurant_id integer NOT NULL,
+            restaurant_id integer,
             navn text NOT NULL,
             passord text NOT NULL
             )""")

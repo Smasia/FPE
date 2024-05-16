@@ -9,12 +9,27 @@
 <body>
   
   <nav>
+    
+
+    <form action="{{ url_for('logg_inn_kunde') }}" method="get">
+      <input type="submit" value="Logg inn">
+    </form>
+
+    <form action="{{ url_for('registrer_kunde') }}" method="get">
+      <input type="submit" value="Registrer deg">
+    </form>
+
     <h1>Restauranter i gjøvik</h1>
     {% if not rid %}
     <form action="{{ url_for('logg_inn') }}" method="get">
       <input type="submit" value="Logg inn som eier">
     </form>
+    {% else %}
+    <form action="{{ url_for('logg_ut') }}" method="get">
+      <input type="submit" value="Logg ut">
+    </form>
     {% endif %}
+
   </nav>
   {% block content %}
   
